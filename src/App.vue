@@ -18,8 +18,7 @@
     <label class="label">テキスト</label>
     <textarea v-model="content" class="textarea textarea-bordered w-full max-w-xs" rows="10"></textarea>
 
-    <label class="label">音声合成</label>
-    <button @click="generate" class="btn btn-primary mb-4 w-full max-w-xs">音声合成</button>
+    <button @click="generate" class="btn btn-primary mt-4 mb-4 w-full max-w-xs">音声合成</button>
 
     <audio id="audio" controls></audio>
   </div>
