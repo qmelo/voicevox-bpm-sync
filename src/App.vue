@@ -1,9 +1,6 @@
 <template>
   <div class="p-4 flex flex-col items-center">
     <h1 class="text-2xl font-bold mb-4 text-center">VOICEVOX BPM SYNC</h1>
-    <p class="text-center mb-4">VOICEVOXの音声合成をBPMに合わせて生成するためのツールです。</p>
-    <p class="text-center mb-4">VOICEVOXのエンジンを起動しておく必要があります。</p>
-    <p class="text-center mb-4">http://localhost:50021/settingでAllow Originにhttps://voicevox-bpm-sync.netlify.appを追加してください。</p>
     
     <label class="label">BPM</label>
     <input type="number" v-model="bpm" class="input input-bordered w-full max-w-xs" />
