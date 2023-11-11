@@ -54,7 +54,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    fetch('http://127.0.0.1:50021/speakers')
+    fetch('http://localhost:50021/speakers')
       .then((res) => res.json())
       .then((data) => {
         this.speakers = data;
@@ -68,7 +68,7 @@ export default defineComponent({
         speaker: this.selectedStyle.id,
       }).toString();
 
-      fetch(`http://127.0.0.1:50021/audio_query?${queryParams}`, {
+      fetch(`http://localhost:50021/audio_query?${queryParams}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ export default defineComponent({
             speaker: this.selectedStyle.id,
           }).toString();
 
-          fetch(`http://127.0.0.1:50021/synthesis?${queryParams}`, {
+          fetch(`http://localhost:50021/synthesis?${queryParams}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
