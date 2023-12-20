@@ -159,8 +159,6 @@ export default defineComponent({
       reader.onload = function (event: any) {
         const data: Data = JSON.parse(event.target.result);
 
-        console.log(data);
-
         for (let audioItem of Object.values(data.audioItems)) {
           for (let accentPhrase of audioItem.query.accentPhrases) {
             const updateMora = function (mora: Mora) {
