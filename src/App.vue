@@ -159,7 +159,7 @@ export default defineComponent({
       reader.onload = function (event: any) {
         const data: Data = JSON.parse(event.target.result);
 
-        for (let audioItem of Object.values(data.audioItems)) {
+        for (let audioItem of Object.values(data.talk.audioItems)) {
           for (let accentPhrase of audioItem.query.accentPhrases) {
             const updateMora = function (mora: Mora) {
               let sum = (mora.consonantLength || 0) + (mora.vowelLength || 0);
