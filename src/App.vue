@@ -39,9 +39,9 @@
       <label class="label">プロジェクトファイル</label>
       <input type="file" class="file-input file-input-bordered w-full max-w-xs" @change="display" />
       
-      <div v-for="query in queries" :key="query.id" class="my-4">
+      <div v-for="query in queries" :key="query.id" class="my-4 w-full">
         <div>{{ query.text }}</div>
-        <div v-for="mora in query.moras" :key="mora.id" class="flex items-center my-2">
+        <div v-for="mora in query.moras" :key="mora.id" class="flex items-center my-2 mr-2">
           <span>{{ mora.text }}</span>
           <select v-model="mora.noteType" class="select select-bordered ml-2">
             <option v-for="option in noteOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
