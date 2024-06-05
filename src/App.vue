@@ -62,7 +62,9 @@ interface AudioItem {
 }
 
 interface Data {
-  audioItems: { [key: string]: AudioItem };
+  talk:{
+    audioItems: { [key: string]: AudioItem };
+  }
 }
 
 export default defineComponent({
