@@ -37,7 +37,19 @@
       <input type="number" v-model="bpm" class="input input-bordered w-full max-w-xs" />
 
       <label class="label">プロジェクトファイル</label>
-      <input type="file" class="file-input file-input-bordered w-full max-w-xs" @change="convert" />
+      <input type="file" class="file-input file-input-bordered w-full max-w-xs" @change="display" />
+      
+      <div v-for="query in queries" :key="query.id" class="my-4">
+        <div>{{ query.text }}</div>
+        <div v-for="mora in query.moras" :key="mora.id" class="flex items-center my-2">
+          <span>{{ mora.text }}</span>
+          <select v-model="mora.noteType" class="select select-bordered ml-2">
+            <option v-for="option in noteOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+          </select>
+        </div>
+      </div>
+
+
     </div>
   </div>
 </template>
@@ -46,8 +58,11 @@
 import { defineComponent } from 'vue'
 
 interface Mora {
+  id: number;
+  text?: string;
   consonantLength?: number;
   vowelLength?: number;
+  noteType: string;
 }
 
 interface AccentPhrase {
@@ -78,6 +93,16 @@ export default defineComponent({
       content: '',
       query: {} as any,
       mode: '音声を合成',
+      queries: [] as any[],
+      noteOptions: [
+        { value: '1/4', label: '1/4' },
+        { value: '1/4T', label: '1/4T' },
+        { value: '1/8', label: '1/8' },
+        { value: '1/8T', label: '1/8T' },
+        { value: '1/16', label: '1/16' },
+        { value: '1/16T', label: '1/16T' },
+        { value: '1/32', label: '1/32' },
+      ],
     }
   },
   computed: {
@@ -186,6 +211,41 @@ export default defineComponent({
         link.href = URL.createObjectURL(blob);
         link.download = file.name;
         link.click();
+      };
+      reader.readAsText(file);
+    },
+    display(event: any){
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const data: Data = JSON.parse(event.target.result);
+
+        this.queries = [];
+        let queryId = 0;
+        for (let audioItem of Object.values(data.talk.audioItems)) {
+          let text = '';
+          let moras = [];
+          let moraId = 0;
+
+          for (let accentPhrase of audioItem.query.accentPhrases) {
+            for (let mora of accentPhrase.moras) {
+              text += mora.text;
+              moras.push({
+                id: moraId++,
+                text: mora.text,
+                noteType: '1/16',
+                consonantLength: mora.consonantLength,
+                vowelLength: mora.vowelLength,
+              });
+            }
+          }
+
+          this.queries.push({
+            id: queryId++,
+            text: text,
+            moras: moras,
+          });
+        }
       };
       reader.readAsText(file);
     },
