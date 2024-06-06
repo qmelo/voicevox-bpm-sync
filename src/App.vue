@@ -8,7 +8,30 @@
       <option>音声を合成</option>
     </select>
     
-    <div v-if="mode === 'プロジェクトファイルを変換'" class="flex flex-col items-center">
+    <div v-if="mode === '音声を合成'" class="flex flex-col items-center">
+
+      <label class="label">BPM</label>
+      <input type="number" v-model="bpm" class="input input-bordered w-full max-w-xs" />
+
+      <label class="label">話者</label>
+      <select v-model="selectedSpeakerUuid" class="select select-bordered w-full max-w-xs" @change="selectedStyleIndex = 0">
+        <option v-for="speaker in speakers" :key="speaker.speaker_uuid" :value="speaker.speaker_uuid">{{ speaker.name }}</option>
+      </select>
+
+      <label class="label">スタイル</label>
+      <select v-model="selectedStyleIndex" class="select select-bordered w-full max-w-xs">
+        <option v-for="(style, index) in selectedSpeakerStyles" :key="style.id" :value="index">{{ style.name }}</option>
+      </select>
+
+      <label class="label">テキスト</label>
+      <textarea v-model="content" class="textarea textarea-bordered w-full max-w-xs" rows="10"></textarea>
+
+      <button @click="generate" class="btn btn-primary mt-4 mb-4 w-full max-w-xs">音声合成</button>
+
+      <audio id="audio" controls></audio>
+    </div>
+    
+    <div v-else class="flex flex-col items-center">
 
       <label class="label">BPM</label>
       <input type="number" v-model="bpm" class="input input-bordered w-full max-w-xs" />
@@ -30,29 +53,6 @@
 
       <button @click="convert" class="btn btn-primary mt-4 mb-4 w-full max-w-xs">プロジェクトファイルを変換</button>
       
-    </div>
-
-    <div v-else class="flex flex-col items-center">
-
-      <label class="label">BPM</label>
-      <input type="number" v-model="bpm" class="input input-bordered w-full max-w-xs" />
-
-      <label class="label">話者</label>
-      <select v-model="selectedSpeakerUuid" class="select select-bordered w-full max-w-xs" @change="selectedStyleIndex = 0">
-        <option v-for="speaker in speakers" :key="speaker.speaker_uuid" :value="speaker.speaker_uuid">{{ speaker.name }}</option>
-      </select>
-
-      <label class="label">スタイル</label>
-      <select v-model="selectedStyleIndex" class="select select-bordered w-full max-w-xs">
-        <option v-for="(style, index) in selectedSpeakerStyles" :key="style.id" :value="index">{{ style.name }}</option>
-      </select>
-
-      <label class="label">テキスト</label>
-      <textarea v-model="content" class="textarea textarea-bordered w-full max-w-xs" rows="10"></textarea>
-
-      <button @click="generate" class="btn btn-primary mt-4 mb-4 w-full max-w-xs">音声合成</button>
-
-      <audio id="audio" controls></audio>
     </div>
   </div>
 </template>
@@ -96,7 +96,7 @@ export default defineComponent({
       selectedStyleIndex: 0,
       content: '',
       query: {} as any,
-      mode: '音声を合成',
+      mode: 'プロジェクトファイルを変換',
       queries: [] as any[],
       noteOptions: [
         { value: 2, label: '1/4' },
