@@ -39,7 +39,7 @@
       <label class="label">プロジェクトファイル</label>
       <input type="file" class="file-input file-input-bordered w-full max-w-xs" @change="display" />
       
-      <!-- <div v-for="query in queries" :key="query.id" class="my-4 w-full">
+      <div v-for="query in queries" :key="query.id" class="my-4 w-full">
         <div>{{ query.text }}</div>
           <div class="flex flex-wrap">
             <div v-for="mora in query.moras" :key="mora.id" class="flex flex-col items-center my-2">
@@ -49,7 +49,7 @@
               </select>
             </div>
           </div>
-      </div> -->
+      </div>
 
       <button @click="convert" class="btn btn-primary mt-4 mb-4 w-full max-w-xs">プロジェクトファイルを変換</button>
       
@@ -190,7 +190,7 @@ export default defineComponent({
     convert(event: any) {
 
       if (!this.data) return;
-      // console.log('Check queries:', this.queries);
+      console.log('Check queries:', this.queries);
       
       const bpm = this.bpm;
 
