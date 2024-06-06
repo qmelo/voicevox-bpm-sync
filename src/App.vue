@@ -203,11 +203,12 @@ export default defineComponent({
       console.log('Data loaded:', this.data);
 
       const getNoteType = (text: string, moraText: string, moraIndex: number): number => {
-      const query = this.queries.find(query => query.text === text);
-      if (query && query.moras[moraIndex]) {
-        return query.moras[moraIndex].noteType;
-      }
-    };
+        const query = this.queries.find(query => query.text === text);
+        if (query && query.moras[moraIndex]) {
+          return query.moras[moraIndex].noteType;
+        }
+        return 8;
+      };
 
       for (let audioItem of Object.values(this.data.talk.audioItems)) {
         // console.log('Processing audioItem:', audioItem);
