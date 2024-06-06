@@ -107,6 +107,7 @@ export default defineComponent({
         { value: 12, label: '1/16T' },
         { value: 16, label: '1/32' },
       ],
+      fileContent: null as string | null,
     }
   },
   computed: {
@@ -183,46 +184,49 @@ export default defineComponent({
         })
     },
     convert(event: any) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      const bpm = this.bpm;
+
+      if (!this.fileContent) return;
       
-      reader.onload = function (event: any) {
-        const data: Data = JSON.parse(event.target.result);
+      const data: Data = JSON.parse(this.fileContent);
+      const bpm = this.bpm;
 
-        for (let audioItem of Object.values(data.talk.audioItems)) {
-          for (let accentPhrase of audioItem.query.accentPhrases) {
-            const updateMora = function (mora: Mora) {
-              let sum = (mora.consonantLength || 0) + (mora.vowelLength || 0);
-              let rate = 60 / bpm / 4 / sum;
+      for (let audioItem of Object.values(data.talk.audioItems)) {
+        for (let accentPhrase of audioItem.query.accentPhrases) {
+          const updateMora = function (mora: Mora) {
+            const noteLength = 60 / bpm / mora.noteType;
+            const totalLength = (mora.consonantLength || 0) + (mora.vowelLength || 0);
 
-              if (mora.consonantLength) mora.consonantLength *= rate;
-              if (mora.vowelLength) mora.vowelLength *= rate;
-            };
-
-            for (let mora of accentPhrase.moras) {
-              updateMora(mora);
+            if (mora.consonantLength) {
+              const consonantRatio = mora.consonantLength / totalLength;
+              mora.consonantLength = noteLength * consonantRatio;
+              mora.vowelLength = noteLength * (1 - consonantRatio);
+            } else {
+              mora.vowelLength = noteLength;
             }
+          };
 
-            if (accentPhrase.pauseMora) {
-              updateMora(accentPhrase.pauseMora);
-            }
+          for (let mora of accentPhrase.moras) {
+            updateMora(mora);
+          }
+
+          if (accentPhrase.pauseMora) {
+            updateMora(accentPhrase.pauseMora);
           }
         }
+      }
 
-        const blob = new Blob([JSON.stringify(data)], { type: "text/plain" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = file.name;
-        link.click();
-      };
-      reader.readAsText(file);
+      const blob = new Blob([JSON.stringify(data)], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = 'converted_project.vvproj';
+      link.click();
     },
     display(event: any){
       const file = event.target.files[0];
       const reader = new FileReader();
       reader.onload = (event: any) => {
         const data: Data = JSON.parse(event.target.result);
+        this.fileContent = event.target.result;
 
         this.queries = [];
         let queryId = 0;
