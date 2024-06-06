@@ -196,16 +196,19 @@ export default defineComponent({
     convert(event: any) {
 
       if (!this.data) return;
-      console.log('Check queries:', this.queries);
       
       const bpm = this.bpm;
 
       console.log('Data loaded:', this.data);
 
       const getNoteType = (text: string, moraIndex: number): number => {
-        const query = this.queries.find(query => query.text === text);
-        if (query && query.moras[moraIndex]) {
-          return query.moras[moraIndex].noteType;
+        const queries = this.queriesByAudioItems[text];
+        if (queries) {
+          for (const query of queries) {
+            if (query.moras[moraIndex]) {
+              return query.moras[moraIndex].noteType;
+            }
+          }
         }
         return 8;
       };
