@@ -107,7 +107,7 @@ export default defineComponent({
         { value: 12, label: '1/16T' },
         { value: 16, label: '1/32' },
       ],
-      fileContent: null as string | null,
+      data: null as Data | null,
     }
   },
   computed: {
@@ -185,15 +185,17 @@ export default defineComponent({
     },
     convert(event: any) {
 
-      if (!this.fileContent) return;
+      if (!this.data) return;
       console.log('Check queries:', this.queries);
       
-      const data: Data = JSON.parse(this.fileContent);
       const bpm = this.bpm;
 
-      console.log('Data loaded:', data);
+      let queryId = 0;
+      let moraId = 0;
 
-      for (let audioItem of Object.values(data.talk.audioItems)) {
+      console.log('Data loaded:', this.data);
+
+      for (let audioItem of Object.values(this.data.talk.audioItems)) {
         console.log('Processing audioItem:', audioItem);
 
         for (let accentPhrase of audioItem.query.accentPhrases) {
@@ -225,7 +227,7 @@ export default defineComponent({
         }
       }
 
-      const blob = new Blob([JSON.stringify(data)], { type: "text/plain" });
+      const blob = new Blob([JSON.stringify(this.data)], { type: "text/plain" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = 'converted_project.vvproj';
@@ -237,7 +239,7 @@ export default defineComponent({
       reader.onload = (event: any) => {
         const data: Data = JSON.parse(event.target.result);
         console.log('Data loaded:', data);
-        this.fileContent = event.target.result;
+        this.data = data;
 
         this.queries = [];
         let queryId = 0;
