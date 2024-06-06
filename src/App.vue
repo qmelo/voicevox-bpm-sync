@@ -186,7 +186,7 @@ export default defineComponent({
     convert(event: any) {
 
       if (!this.fileContent) return;
-      console.log('Check queries:', queries);
+      console.log('Check queries:', this.queries);
       
       const data: Data = JSON.parse(this.fileContent);
       const bpm = this.bpm;
