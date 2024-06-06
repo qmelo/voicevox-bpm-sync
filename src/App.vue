@@ -98,13 +98,13 @@ export default defineComponent({
       mode: '音声を合成',
       queries: [] as any[],
       noteOptions: [
-        { value: '1/4', label: '1/4' },
-        { value: '1/4T', label: '1/4T' },
-        { value: '1/8', label: '1/8' },
-        { value: '1/8T', label: '1/8T' },
-        { value: '1/16', label: '1/16' },
-        { value: '1/16T', label: '1/16T' },
-        { value: '1/32', label: '1/32' },
+        { value: 2, label: '1/4' },
+        { value: 3, label: '1/4T' },
+        { value: 4, label: '1/8' },
+        { value: 6, label: '1/8T' },
+        { value: 8, label: '1/16' },
+        { value: 12, label: '1/16T' },
+        { value: 16, label: '1/32' },
       ],
     }
   },
@@ -233,7 +233,6 @@ export default defineComponent({
 
           for (let accentPhrase of audioItem.query.accentPhrases) {
             for (let mora of accentPhrase.moras) {
-              text += mora.text;
               moras.push({
                 id: moraId++,
                 text: mora.text,
