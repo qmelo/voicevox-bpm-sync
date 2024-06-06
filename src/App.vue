@@ -213,15 +213,15 @@ export default defineComponent({
         return 8;
       };
 
-      for (let audioItem of Object.values(this.data.talk.audioItems)) {
-        // console.log('Processing audioItem:', audioItem);
+      for (let audioItemId in this.data.talk.audioItems) {
+        const audioItem = this.data.talk.audioItems[audioItemId];
         const text = audioItem.text;
 
-        for (let accentPhrase of audioItem.query.accentPhrases) {
-          // console.log('Processing accentPhrase:', accentPhrase);
+        let moraIndex = 0;
 
-          const updateMora = function (mora: Mora, moraIndex: number) {
-            const noteType = getNoteType(text, moraIndex);
+        for (let accentPhrase of audioItem.query.accentPhrases) {
+          const updateMora = (mora: Mora, moraIndex: number) => {
+            const noteType = getNoteType(audioItemId, moraIndex);
             console.log('Get noteType:', noteType);
             const noteLength = 60 / bpm / noteType;
             const totalLength = (mora.consonantLength || 0) + (mora.vowelLength || 0);
@@ -234,7 +234,6 @@ export default defineComponent({
               mora.vowelLength = noteLength;
             }
           };
-          let moraIndex = 0;
           for (let mora of accentPhrase.moras) {
             console.log(`Original mora:`, mora);
             updateMora(mora, moraIndex++);
@@ -243,7 +242,6 @@ export default defineComponent({
 
           if (accentPhrase.pauseMora) {
             updateMora(accentPhrase.pauseMora, moraIndex++);
-            continue;
           }
         }
       }
