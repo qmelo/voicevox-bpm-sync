@@ -61,11 +61,11 @@
 import { defineComponent } from 'vue'
 
 interface Mora {
-  id: number;
+  // id: number;
   text: string;
-  consonantLength?: number;
-  vowelLength?: number;
-  noteType: number;
+  consonantLength?: number | null;
+  vowelLength?: number | null;
+  // noteType: number;
 }
 
 interface AccentPhrase {
@@ -221,7 +221,6 @@ export default defineComponent({
           if (accentPhrase.pauseMora) {
             updateMora(accentPhrase.pauseMora);
           }
-
         }
       }
 
