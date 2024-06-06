@@ -281,6 +281,11 @@ export default defineComponent({
                 text: accentPhrase.pauseMora.text,
                 noteType: 8,
               });
+              this.queries.push({
+                id: queryId++,
+                text: text,
+                moras: moraList,
+              });
               continue;
             }
           }
