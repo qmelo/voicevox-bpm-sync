@@ -232,7 +232,7 @@ export default defineComponent({
               mora.vowelLength = noteLength;
             }
           };
-          let moraIndex = -1;
+          let moraIndex = 0;
           for (let mora of accentPhrase.moras) {
             console.log(`Original mora:`, mora);
             updateMora(mora, moraIndex++);
@@ -240,7 +240,7 @@ export default defineComponent({
           }
 
           if (accentPhrase.pauseMora) {
-            updateMora(accentPhrase.pauseMora);
+            updateMora(accentPhrase.pauseMora, moraIndex);
           }
         }
       }
