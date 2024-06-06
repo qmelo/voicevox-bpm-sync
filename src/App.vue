@@ -190,8 +190,11 @@ export default defineComponent({
       const data: Data = JSON.parse(this.fileContent);
       const bpm = this.bpm;
 
+      console.log('Data loaded:', data);
+
       for (let audioItem of Object.values(data.talk.audioItems)) {
         for (let accentPhrase of audioItem.query.accentPhrases) {
+
           const updateMora = function (mora: Mora) {
             const noteLength = 60 / bpm / mora.noteType;
             const totalLength = (mora.consonantLength || 0) + (mora.vowelLength || 0);
@@ -206,19 +209,22 @@ export default defineComponent({
           };
 
           for (let mora of accentPhrase.moras) {
+            console.log(`Original mora:`, mora);
             updateMora(mora);
           }
 
           if (accentPhrase.pauseMora) {
             updateMora(accentPhrase.pauseMora);
           }
+
+          console.log(`Updated mora:`, mora);
         }
       }
 
       const blob = new Blob([JSON.stringify(data)], { type: "text/plain" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = 'converted_project.vvproj';
+      link.download = file.name;
       link.click();
     },
     display(event: any){
@@ -241,7 +247,7 @@ export default defineComponent({
               moras.push({
                 id: moraId++,
                 text: mora.text,
-                noteType: 4,
+                noteType: 8,
                 consonantLength: mora.consonantLength,
                 vowelLength: mora.vowelLength,
               });
