@@ -42,7 +42,7 @@
       <div v-for="query in queries" :key="query.id" class="my-4 w-full">
         <div>{{ query.text }}</div>
         <div class="flex flex-wrap">
-          <div v-for="(mora, index) in query.moras" :key="index" class="flex flex-col items-center my-2">
+          <div v-for="mora in query.moras" :key="mora.id" class="flex flex-col items-center my-2">
             <span>{{ mora.text }}</span>
             <select v-model="mora.noteType" class="select select-bordered ml-2">
               <option v-for="option in noteOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
@@ -84,10 +84,16 @@ interface Data {
   }
 }
 
+interface DisplayMora {
+  id: number;
+  text: string;
+  noteType: number;
+}
+
 interface Query {
   id: number;
   text: string;
-  moras: Mora[];
+  moras: DisplayMora[];
 }
 
 export default defineComponent({
@@ -251,7 +257,7 @@ export default defineComponent({
 
         for (let audioItem of Object.values(data.talk.audioItems)) {
           let text = audioItem.text;
-          let moraList = [];
+          let moraList: DisplayMora[] = []; // DisplayMora 型を指定する
 
           for (let accentPhrase of audioItem.query.accentPhrases) {
             for (let mora of accentPhrase.moras) {
@@ -260,8 +266,6 @@ export default defineComponent({
                 id: moraId++,
                 text: mora.text,
                 noteType: 8,
-                consonantLength: mora.consonantLength,
-                vowelLength: mora.vowelLength,
               });
             }
           }
