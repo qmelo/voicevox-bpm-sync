@@ -239,8 +239,8 @@ export default defineComponent({
           }
 
           if (accentPhrase.pauseMora) {
-            updateMora(accentPhrase.pauseMora, moraIndex);
-            moraIndex++;
+            updateMora(accentPhrase.pauseMora, moraIndex++);
+            continue;
           }
         }
       }
@@ -281,6 +281,7 @@ export default defineComponent({
                 text: accentPhrase.pauseMora.text,
                 noteType: 8,
               });
+              continue;
             }
           }
 
