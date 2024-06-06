@@ -65,7 +65,7 @@ interface Mora {
   text: string;
   consonantLength?: number;
   vowelLength?: number;
-  noteType: string;
+  noteType: number;
 }
 
 interface AccentPhrase {
