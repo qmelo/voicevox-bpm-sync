@@ -197,9 +197,10 @@ export default defineComponent({
 
         for (let accentPhrase of audioItem.query.accentPhrases) {
           console.log('Processing accentPhrase:', accentPhrase);
-          
+
           const updateMora = function (mora: Mora) {
             const noteLength = 60 / bpm / mora.noteType;
+            console.log('Get noteType:', mora.noteType);
             const totalLength = (mora.consonantLength || 0) + (mora.vowelLength || 0);
 
             if (mora.consonantLength) {
