@@ -236,7 +236,7 @@ export default defineComponent({
               moras.push({
                 id: moraId++,
                 text: mora.text,
-                noteType: '1/16',
+                noteType: 4,
                 consonantLength: mora.consonantLength,
                 vowelLength: mora.vowelLength,
               });
