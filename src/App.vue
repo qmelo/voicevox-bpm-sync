@@ -39,9 +39,9 @@
       <label class="label">プロジェクトファイル</label>
       <input type="file" class="file-input file-input-bordered w-full max-w-xs" @change="display" />
       
-      <div v-for="query in queries" :key="query.id" class="my-4 w-full">
-        <div>{{ query.text }}</div>
-        <div class="flex flex-wrap">
+      <div v-for="(queries, audioId) in queriesByAudioItems" :key="audioId" class="my-4 w-full">
+        <div>{{ queries[0].text }}</div>
+        <div class="flex flex-wrap" v-for="query in queries" :key="query.id">
           <div v-for="mora in query.moras" :key="mora.id" class="flex flex-col items-center my-2">
             <span>{{ mora.text }}</span>
             <select v-model="mora.noteType" class="select select-bordered ml-2">
@@ -107,7 +107,7 @@ export default defineComponent({
       content: '',
       query: {} as any,
       mode: 'プロジェクトファイルを変換',
-      queries: [] as Query[],
+      queriesByAudioItems: {} as { [key: string]: Query[] },
       noteOptions: [
         { value: 2, label: '1/4' },
         { value: 3, label: '1/4T' },
@@ -259,7 +259,7 @@ export default defineComponent({
         console.log('Data loaded:', data);
         this.data = data;
 
-        this.queries = [];
+        this.queriesByAudioItems = {};
         let queryId = 0;
         let moraId = 0;
 
@@ -281,16 +281,14 @@ export default defineComponent({
                 text: accentPhrase.pauseMora.text,
                 noteType: 8,
               });
-              this.queries.push({
-                id: queryId++,
-                text: text,
-                moras: moraList,
-              });
-              continue;
             }
           }
 
-          this.queries.push({
+          if (!this.queriesByAudioItems[audioItemId]) {
+            this.queriesByAudioItems[audioItemId] = [];
+          }
+
+          this.queriesByAudioItems[audioItemId].push({
             id: queryId++,
             text: text,
             moras: moraList,
