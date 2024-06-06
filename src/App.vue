@@ -220,8 +220,7 @@ export default defineComponent({
           const updateMora = function (mora: Mora, moraIndex: number) {
             const noteType = getNoteType(text, moraIndex);
             console.log('Get noteType:', noteType);
-            const noteLength = 60 / bpm / 4;
-            // console.log('Get noteType:', mora.noteType);
+            const noteLength = 60 / bpm / noteType;
             const totalLength = (mora.consonantLength || 0) + (mora.vowelLength || 0);
 
             if (mora.consonantLength) {
@@ -241,6 +240,7 @@ export default defineComponent({
 
           if (accentPhrase.pauseMora) {
             updateMora(accentPhrase.pauseMora, moraIndex);
+            moraIndex++;
           }
         }
       }
@@ -269,10 +269,16 @@ export default defineComponent({
 
           for (let accentPhrase of audioItem.query.accentPhrases) {
             for (let mora of accentPhrase.moras) {
-              
               moraList.push({
                 id: moraId++,
                 text: mora.text,
+                noteType: 8,
+              });
+            }
+            if (accentPhrase.pauseMora) {
+              moraList.push({
+                id: moraId++,
+                text: accentPhrase.pauseMora.text,
                 noteType: 8,
               });
             }
