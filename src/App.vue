@@ -42,7 +42,7 @@
       <div v-for="query in queries" :key="query.id" class="my-4 w-full">
         <div>{{ query.text }}</div>
           <div class="flex flex-wrap">
-            <div v-for="mora in query.moras" :key="mora.id" class="flex items-center my-2">
+            <div v-for="mora in query.moras" :key="mora.id" class="flex flex-col items-center my-2">
               <span>{{ mora.text }}</span>
               <select v-model="mora.noteType" class="select select-bordered ml-2">
                 <option v-for="option in noteOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
@@ -73,6 +73,7 @@ interface AccentPhrase {
 }
 
 interface AudioItem {
+  text?: string;
   query: {
     accentPhrases: AccentPhrase[];
   };
