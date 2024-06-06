@@ -212,6 +212,7 @@ export default defineComponent({
 
       for (let audioItem of Object.values(this.data.talk.audioItems)) {
         // console.log('Processing audioItem:', audioItem);
+        const text = audioItem.text;
 
         for (let accentPhrase of audioItem.query.accentPhrases) {
           // console.log('Processing accentPhrase:', accentPhrase);
