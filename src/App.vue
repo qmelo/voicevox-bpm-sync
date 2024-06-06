@@ -232,6 +232,7 @@ export default defineComponent({
       const reader = new FileReader();
       reader.onload = (event: any) => {
         const data: Data = JSON.parse(event.target.result);
+        console.log('Data loaded:', data);
         this.fileContent = event.target.result;
 
         this.queries = [];
