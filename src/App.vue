@@ -4,8 +4,8 @@
 
     <label class="label">モード</label>
     <select class="select select-bordered w-full max-w-xs" v-model="mode">
-      <option>音声を合成</option>
       <option>プロジェクトファイルを変換</option>
+      <option>音声を合成</option>
     </select>
     
     <div v-if="mode === '音声を合成'" class="flex flex-col items-center">
@@ -51,7 +51,8 @@
           </div>
       </div>
 
-
+      <button @click="convert" class="btn btn-primary mt-4 mb-4 w-full max-w-xs">プロジェクトファイルを変換</button>
+      
     </div>
   </div>
 </template>
