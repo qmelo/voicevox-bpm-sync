@@ -225,10 +225,11 @@ export default defineComponent({
 
         this.queries = [];
         let queryId = 0;
+        let moraId = 0;
+
         for (let audioItem of Object.values(data.talk.audioItems)) {
-          let text = '';
+          let text = audioItem.text;
           let moras = [];
-          let moraId = 0;
 
           for (let accentPhrase of audioItem.query.accentPhrases) {
             for (let mora of accentPhrase.moras) {
