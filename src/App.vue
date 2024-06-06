@@ -41,14 +41,14 @@
       
       <div v-for="query in queries" :key="query.id" class="my-4 w-full">
         <div>{{ query.text }}</div>
-          <div class="flex flex-wrap">
-            <div v-for="mora in query.moras" :key="mora.id" class="flex flex-col items-center my-2">
-              <span>{{ mora.text }}</span>
-              <select v-model="mora.noteType" class="select select-bordered ml-2">
-                <option v-for="option in noteOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
-              </select>
-            </div>
+        <div class="flex flex-wrap">
+          <div v-for="(mora, index) in query.moras" :key="index" class="flex flex-col items-center my-2">
+            <span>{{ mora.text }}</span>
+            <select v-model="mora.noteType" class="select select-bordered ml-2">
+              <option v-for="option in noteOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+            </select>
           </div>
+        </div>
       </div>
 
       <button @click="convert" class="btn btn-primary mt-4 mb-4 w-full max-w-xs">プロジェクトファイルを変換</button>
