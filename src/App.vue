@@ -263,9 +263,10 @@ export default defineComponent({
         let queryId = 0;
         let moraId = 0;
 
-        for (let audioItem of Object.values(data.talk.audioItems)) {
+        for (let audioItemId in data.talk.audioItems) {
+          const audioItem = data.talk.audioItems[audioItemId];
           let text = audioItem.text;
-          let moraList: DisplayMora[] = []; // DisplayMora 型を指定する
+          let moraList: DisplayMora[] = [];
 
           for (let accentPhrase of audioItem.query.accentPhrases) {
             for (let mora of accentPhrase.moras) {
