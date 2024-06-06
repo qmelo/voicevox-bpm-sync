@@ -202,7 +202,7 @@ export default defineComponent({
 
       console.log('Data loaded:', this.data);
 
-      const getNoteType = (text: string, moraText: string, moraIndex: number): number => {
+      const getNoteType = (text: string, moraIndex: number): number => {
         const query = this.queries.find(query => query.text === text);
         if (query && query.moras[moraIndex]) {
           return query.moras[moraIndex].noteType;
@@ -218,7 +218,7 @@ export default defineComponent({
           // console.log('Processing accentPhrase:', accentPhrase);
 
           const updateMora = function (mora: Mora) {
-            const noteType = getNoteType(text, mora.text, moraIndex);
+            const noteType = getNoteType(text, moraIndex);
             console.log('Get noteType:', noteType);
             const noteLength = 60 / bpm / 4;
             // console.log('Get noteType:', mora.noteType);
