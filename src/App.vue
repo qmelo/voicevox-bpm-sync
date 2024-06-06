@@ -61,9 +61,7 @@
 import { defineComponent } from 'vue'
 
 interface Mora {
-  id?: number;
-  noteType?: number;
-  text?: string;
+  text: string;
   consonantLength?: number | null;
   vowelLength?: number | null;
 }
@@ -86,6 +84,12 @@ interface Data {
   }
 }
 
+interface Query {
+  id: number;
+  text: string;
+  moras: Mora[];
+}
+
 export default defineComponent({
   name: 'App',
   data() {
@@ -97,7 +101,7 @@ export default defineComponent({
       content: '',
       query: {} as any,
       mode: 'プロジェクトファイルを変換',
-      queries: [] as any[],
+      queries: [] as Query[],
       noteOptions: [
         { value: 2, label: '1/4' },
         { value: 3, label: '1/4T' },
@@ -186,7 +190,7 @@ export default defineComponent({
     convert(event: any) {
 
       if (!this.data) return;
-      console.log('Check queries:', this.queries);
+      // console.log('Check queries:', this.queries);
       
       const bpm = this.bpm;
 
@@ -196,10 +200,10 @@ export default defineComponent({
       console.log('Data loaded:', this.data);
 
       for (let audioItem of Object.values(this.data.talk.audioItems)) {
-        console.log('Processing audioItem:', audioItem);
+        // console.log('Processing audioItem:', audioItem);
 
         for (let accentPhrase of audioItem.query.accentPhrases) {
-          console.log('Processing accentPhrase:', accentPhrase);
+          // console.log('Processing accentPhrase:', accentPhrase);
 
           const updateMora = function (mora: Mora) {
             const noteLength = 60 / bpm / mora.noteType;
@@ -247,12 +251,12 @@ export default defineComponent({
 
         for (let audioItem of Object.values(data.talk.audioItems)) {
           let text = audioItem.text;
-          let moras = [];
+          let moraList = [];
 
           for (let accentPhrase of audioItem.query.accentPhrases) {
             for (let mora of accentPhrase.moras) {
               
-              moras.push({
+              moraList.push({
                 id: moraId++,
                 text: mora.text,
                 noteType: 8,
@@ -265,7 +269,7 @@ export default defineComponent({
           this.queries.push({
             id: queryId++,
             text: text,
-            moras: moras,
+            moras: moraList,
           });
         }
       };
