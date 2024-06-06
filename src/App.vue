@@ -61,11 +61,11 @@
 import { defineComponent } from 'vue'
 
 interface Mora {
-  // id: number;
-  text: string;
+  id?: number;
+  noteType?: number;
+  text?: string;
   consonantLength?: number | null;
   vowelLength?: number | null;
-  // noteType: number;
 }
 
 interface AccentPhrase {
@@ -251,6 +251,7 @@ export default defineComponent({
 
           for (let accentPhrase of audioItem.query.accentPhrases) {
             for (let mora of accentPhrase.moras) {
+              
               moras.push({
                 id: moraId++,
                 text: mora.text,
