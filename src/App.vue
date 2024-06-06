@@ -61,7 +61,7 @@ import { defineComponent } from 'vue'
 
 interface Mora {
   id: number;
-  text?: string;
+  text: string;
   consonantLength?: number;
   vowelLength?: number;
   noteType: string;
@@ -73,7 +73,7 @@ interface AccentPhrase {
 }
 
 interface AudioItem {
-  text?: string;
+  text: string;
   query: {
     accentPhrases: AccentPhrase[];
   };
