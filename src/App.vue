@@ -42,6 +42,10 @@
       <!-- 音価設定用の表示を追加 -->
       <div v-for="(queries, audioId) in queriesByAudioItems" :key="audioId" class="my-4 w-full">
         <div>{{ queries[0].text }}</div>
+        <label class="label">音価一括変更</label>
+        <select class="select select-bordered w-full max-w-xs" @change="updateNoteValue(audioId, $event)">
+          <option v-for="option in noteOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+        </select>
         <div class="flex flex-wrap" v-for="query in queries" :key="query.id">
           <div v-for="mora in query.moras" :key="mora.id" class="flex flex-col items-center my-2">
             <span>{{ mora.text }}</span>
@@ -300,6 +304,17 @@ export default defineComponent({
         }
       };
       reader.readAsText(file);
+    },
+    updateNoteType(audioItemId: string, event: Event) {
+      const newNoteValue = (event.target as HTMLSelectElement).value;
+      const queries = this.queriesByAudioItems[audioItemId];
+      if (queries) {
+        queries.forEach(query => {
+          query.moras.forEach(mora => {
+            mora.noteType = Number(newNoteValue);
+          });
+        });
+      }
     },
   },
 })
