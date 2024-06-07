@@ -195,54 +195,6 @@ export default defineComponent({
             })
         })
     },
-    display(event: any){
-      const file = event.target.files[0];
-      this.fileName = file.name;
-      const reader = new FileReader();
-      reader.onload = (event: any) => {
-        const data: Data = JSON.parse(event.target.result);
-        // console.log('Data loaded:', data);
-        this.data = data;
-
-        this.queriesByAudioItems = {};
-        let queryId = 0;
-        let moraId = 0;
-
-        for (let audioItemId in data.talk.audioItems) {
-          const audioItem = data.talk.audioItems[audioItemId];
-          let text = audioItem.text;
-          let moraList: DisplayMora[] = [];
-
-          for (let accentPhrase of audioItem.query.accentPhrases) {
-            for (let mora of accentPhrase.moras) {
-              moraList.push({
-                id: moraId++,
-                text: mora.text,
-                noteValue: 8,
-              });
-            }
-            if (accentPhrase.pauseMora) {
-              moraList.push({
-                id: moraId++,
-                text: accentPhrase.pauseMora.text,
-                noteValue: 8,
-              });
-            }
-          }
-
-          if (!this.queriesByAudioItems[audioItemId]) {
-            this.queriesByAudioItems[audioItemId] = [];
-          }
-
-          this.queriesByAudioItems[audioItemId].push({
-            id: queryId++,
-            text: text,
-            moras: moraList,
-          });
-        }
-      };
-      reader.readAsText(file);
-    },
     convert() {
 
       if (!this.data) return;
@@ -300,6 +252,54 @@ export default defineComponent({
       link.href = URL.createObjectURL(blob);
       link.download = this.fileName;
       link.click();
+    },
+    display(event: any){
+      const file = event.target.files[0];
+      this.fileName = file.name;
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const data: Data = JSON.parse(event.target.result);
+        // console.log('Data loaded:', data);
+        this.data = data;
+
+        this.queriesByAudioItems = {};
+        let queryId = 0;
+        let moraId = 0;
+
+        for (let audioItemId in data.talk.audioItems) {
+          const audioItem = data.talk.audioItems[audioItemId];
+          let text = audioItem.text;
+          let moraList: DisplayMora[] = [];
+
+          for (let accentPhrase of audioItem.query.accentPhrases) {
+            for (let mora of accentPhrase.moras) {
+              moraList.push({
+                id: moraId++,
+                text: mora.text,
+                noteValue: 8,
+              });
+            }
+            if (accentPhrase.pauseMora) {
+              moraList.push({
+                id: moraId++,
+                text: accentPhrase.pauseMora.text,
+                noteValue: 8,
+              });
+            }
+          }
+
+          if (!this.queriesByAudioItems[audioItemId]) {
+            this.queriesByAudioItems[audioItemId] = [];
+          }
+
+          this.queriesByAudioItems[audioItemId].push({
+            id: queryId++,
+            text: text,
+            moras: moraList,
+          });
+        }
+      };
+      reader.readAsText(file);
     },
   },
 })
