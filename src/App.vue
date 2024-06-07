@@ -43,7 +43,7 @@
       <div v-for="(queries, audioId) in queriesByAudioItems" :key="audioId" class="my-4 w-full">
         <div>{{ queries[0].text }}</div>
         <label class="label">音価一括変更</label>
-        <select class="select select-bordered w-full max-w-xs" @change="updateNoteValue(audioId, $event)">
+        <select class="select select-bordered w-full max-w-xs" @change="updateNoteValue(String(audioId), $event)">
           <option v-for="option in noteOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
         </select>
         <div class="flex flex-wrap" v-for="query in queries" :key="query.id">
