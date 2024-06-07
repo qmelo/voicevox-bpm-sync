@@ -193,7 +193,7 @@ export default defineComponent({
             })
         })
     },
-    convert(event: any) {
+    convert() {
 
       if (!this.data) return;
       
@@ -201,8 +201,8 @@ export default defineComponent({
 
       console.log('Data loaded:', this.data);
 
-      const getNoteType = (text: string, moraIndex: number): number => {
-        const queries = this.queriesByAudioItems[text];
+      const getNoteType = (audioItemId: string, moraIndex: number): number => {
+        const queries = this.queriesByAudioItems[audioItemId];
         if (queries) {
           for (const query of queries) {
             if (query.moras[moraIndex]) {
@@ -215,7 +215,6 @@ export default defineComponent({
 
       for (let audioItemId in this.data.talk.audioItems) {
         const audioItem = this.data.talk.audioItems[audioItemId];
-        const text = audioItem.text;
 
         let moraIndex = 0;
 
