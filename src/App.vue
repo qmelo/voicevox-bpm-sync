@@ -39,12 +39,13 @@
       <label class="label">プロジェクトファイル</label>
       <input type="file" class="file-input file-input-bordered w-full max-w-xs" @change="display" />
       
+      
       <div v-for="(queries, audioId) in queriesByAudioItems" :key="audioId" class="my-4 w-full">
         <div>{{ queries[0].text }}</div>
         <div class="flex flex-wrap" v-for="query in queries" :key="query.id">
           <div v-for="mora in query.moras" :key="mora.id" class="flex flex-col items-center my-2">
             <span>{{ mora.text }}</span>
-            <select v-model="mora.noteType" class="select select-bordered ml-2">
+            <select v-model="mora.noteValue" class="select select-bordered ml-2">
               <option v-for="option in noteOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
             </select>
           </div>
@@ -87,7 +88,7 @@ interface Data {
 interface DisplayMora {
   id: number;
   text: string;
-  noteType: number;
+  noteValue: number;
 }
 
 interface Query {
@@ -201,12 +202,12 @@ export default defineComponent({
 
       console.log('Data loaded:', this.data);
 
-      const getNoteType = (audioItemId: string, moraIndex: number): number => {
+      const getNoteValue = (audioItemId: string, moraIndex: number): number => {
         const queries = this.queriesByAudioItems[audioItemId];
         if (queries) {
           for (const query of queries) {
             if (query.moras[moraIndex]) {
-              return query.moras[moraIndex].noteType;
+              return query.moras[moraIndex].noteValue;
             }
           }
         }
@@ -220,9 +221,9 @@ export default defineComponent({
 
         for (let accentPhrase of audioItem.query.accentPhrases) {
           const updateMora = (mora: Mora, moraIndex: number) => {
-            const noteType = getNoteType(audioItemId, moraIndex);
-            console.log('Get noteType:', noteType);
-            const noteLength = 60 / bpm / noteType;
+            const noteValue = getNoteValue(audioItemId, moraIndex);
+            console.log('Get noteValue:', noteValue);
+            const noteLength = 60 / bpm / noteValue;
             const totalLength = (mora.consonantLength || 0) + (mora.vowelLength || 0);
 
             if (mora.consonantLength) {
@@ -273,14 +274,14 @@ export default defineComponent({
               moraList.push({
                 id: moraId++,
                 text: mora.text,
-                noteType: 8,
+                noteValue: 8,
               });
             }
             if (accentPhrase.pauseMora) {
               moraList.push({
                 id: moraId++,
                 text: accentPhrase.pauseMora.text,
-                noteType: 8,
+                noteValue: 8,
               });
             }
           }
