@@ -306,7 +306,7 @@ export default defineComponent({
       reader.readAsText(file);
     },
     updateNoteValue(audioItemId: string, event: Event) {
-      const newNoteValue = (event.target as HTMLSelectElement).value;
+      const newNoteValue = Number((event.target as HTMLSelectElement).value);
       const queries = this.queriesByAudioItems[audioItemId];
       if (queries) {
         queries.forEach(query => {
