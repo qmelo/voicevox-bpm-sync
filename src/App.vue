@@ -305,13 +305,13 @@ export default defineComponent({
       };
       reader.readAsText(file);
     },
-    updateNoteType(audioItemId: string, event: Event) {
+    updateNoteValue(audioItemId: string, event: Event) {
       const newNoteValue = (event.target as HTMLSelectElement).value;
       const queries = this.queriesByAudioItems[audioItemId];
       if (queries) {
         queries.forEach(query => {
           query.moras.forEach(mora => {
-            mora.noteType = Number(newNoteValue);
+            mora.noteValue = Number(newNoteValue);
           });
         });
       }
