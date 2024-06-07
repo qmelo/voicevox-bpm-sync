@@ -4,8 +4,8 @@
 
     <label class="label">モード</label>
     <select class="select select-bordered w-full max-w-xs" v-model="mode">
-      <option>音声を合成</option>
       <option>プロジェクトファイルを変換</option>
+      <option>音声を合成</option>
     </select>
     
     <div v-if="mode === '音声を合成'" class="flex flex-col items-center">
@@ -37,7 +37,23 @@
       <input type="number" v-model="bpm" class="input input-bordered w-full max-w-xs" />
 
       <label class="label">プロジェクトファイル</label>
-      <input type="file" class="file-input file-input-bordered w-full max-w-xs" @change="convert" />
+      <input type="file" class="file-input file-input-bordered w-full max-w-xs" @change="display" />
+      
+      <!-- 音価設定用の表示を追加 -->
+      <div v-for="(queries, audioId) in queriesByAudioItems" :key="audioId" class="my-4 w-full">
+        <div>{{ queries[0].text }}</div>
+        <div class="flex flex-wrap" v-for="query in queries" :key="query.id">
+          <div v-for="mora in query.moras" :key="mora.id" class="flex flex-col items-center my-2">
+            <span>{{ mora.text }}</span>
+            <select v-model="mora.noteValue" class="select select-bordered ml-2">
+              <option v-for="option in noteOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <!-- 変換を実行するボタンを追加 -->
+      <button @click="convert" class="btn btn-primary mt-4 mb-4 w-full max-w-xs">プロジェクトファイルを変換</button>
+      
     </div>
   </div>
 </template>
@@ -46,8 +62,9 @@
 import { defineComponent } from 'vue'
 
 interface Mora {
-  consonantLength?: number;
-  vowelLength?: number;
+  text: string;
+  consonantLength?: number | null;
+  vowelLength?: number | null;
 }
 
 interface AccentPhrase {
@@ -56,13 +73,28 @@ interface AccentPhrase {
 }
 
 interface AudioItem {
+  text: string;
   query: {
     accentPhrases: AccentPhrase[];
   };
 }
 
 interface Data {
-  audioItems: { [key: string]: AudioItem };
+  talk:{
+    audioItems: { [key: string]: AudioItem };
+  }
+}
+
+interface DisplayMora {
+  id: number;
+  text: string;
+  noteValue: number;
+}
+
+interface Query {
+  id: number;
+  text: string;
+  moras: DisplayMora[];
 }
 
 export default defineComponent({
@@ -75,7 +107,19 @@ export default defineComponent({
       selectedStyleIndex: 0,
       content: '',
       query: {} as any,
-      mode: '音声を合成',
+      mode: 'プロジェクトファイルを変換',
+      queriesByAudioItems: {} as { [key: string]: Query[] },
+      noteOptions: [
+        { value: 2, label: '1/4' },
+        { value: 3, label: '1/4T' },
+        { value: 4, label: '1/8' },
+        { value: 6, label: '1/8T' },
+        { value: 8, label: '1/16' },
+        { value: 12, label: '1/16T' },
+        { value: 16, label: '1/32' },
+      ],
+      data: null as Data | null,
+      fileName: '',
     }
   },
   computed: {
@@ -151,39 +195,109 @@ export default defineComponent({
             })
         })
     },
-    convert(event: any) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      const bpm = this.bpm;
+    convert() {
+
+      if (!this.data) return;
       
-      reader.onload = function (event: any) {
-        const data: Data = JSON.parse(event.target.result);
+      const bpm = this.bpm;
 
-        for (let audioItem of Object.values(data.audioItems)) {
-          for (let accentPhrase of audioItem.query.accentPhrases) {
-            const updateMora = function (mora: Mora) {
-              let sum = (mora.consonantLength || 0) + (mora.vowelLength || 0);
-              let rate = 60 / bpm / 4 / sum;
+      // console.log('Data loaded:', this.data);
 
-              if (mora.consonantLength) mora.consonantLength *= rate;
-              if (mora.vowelLength) mora.vowelLength *= rate;
-            };
-
-            for (let mora of accentPhrase.moras) {
-              updateMora(mora);
-            }
-
-            if (accentPhrase.pauseMora) {
-              updateMora(accentPhrase.pauseMora);
+      const getNoteValue = (audioItemId: string, moraIndex: number): number => {
+        const queries = this.queriesByAudioItems[audioItemId];
+        if (queries) {
+          for (const query of queries) {
+            if (query.moras[moraIndex]) {
+              return query.moras[moraIndex].noteValue;
             }
           }
         }
+        return 8;
+      };
 
-        const blob = new Blob([JSON.stringify(data)], { type: "text/plain" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = file.name;
-        link.click();
+      for (let audioItemId in this.data.talk.audioItems) {
+        const audioItem = this.data.talk.audioItems[audioItemId];
+
+        let moraIndex = 0;
+
+        for (let accentPhrase of audioItem.query.accentPhrases) {
+          const updateMora = (mora: Mora, moraIndex: number) => {
+            const noteValue = getNoteValue(audioItemId, moraIndex);
+            // console.log('Get noteValue:', noteValue);
+            const noteLength = 60 / bpm / noteValue;
+            const totalLength = (mora.consonantLength || 0) + (mora.vowelLength || 0);
+
+            if (mora.consonantLength) {
+              const consonantRatio = mora.consonantLength / totalLength;
+              mora.consonantLength = noteLength * consonantRatio;
+              mora.vowelLength = noteLength * (1 - consonantRatio);
+            } else {
+              mora.vowelLength = noteLength;
+            }
+          };
+          for (let mora of accentPhrase.moras) {
+            // console.log(`Original mora:`, mora);
+            updateMora(mora, moraIndex++);
+            // console.log(`Updated mora:`, mora);
+          }
+
+          if (accentPhrase.pauseMora) {
+            updateMora(accentPhrase.pauseMora, moraIndex++);
+          }
+        }
+      }
+
+      const blob = new Blob([JSON.stringify(this.data)], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = this.fileName;
+      link.click();
+    },
+    display(event: any){
+      const file = event.target.files[0];
+      this.fileName = file.name;
+      const reader = new FileReader();
+      reader.onload = (event: any) => {
+        const data: Data = JSON.parse(event.target.result);
+        // console.log('Data loaded:', data);
+        this.data = data;
+
+        this.queriesByAudioItems = {};
+        let queryId = 0;
+        let moraId = 0;
+
+        for (let audioItemId in data.talk.audioItems) {
+          const audioItem = data.talk.audioItems[audioItemId];
+          let text = audioItem.text;
+          let moraList: DisplayMora[] = [];
+
+          for (let accentPhrase of audioItem.query.accentPhrases) {
+            for (let mora of accentPhrase.moras) {
+              moraList.push({
+                id: moraId++,
+                text: mora.text,
+                noteValue: 8,
+              });
+            }
+            if (accentPhrase.pauseMora) {
+              moraList.push({
+                id: moraId++,
+                text: accentPhrase.pauseMora.text,
+                noteValue: 8,
+              });
+            }
+          }
+
+          if (!this.queriesByAudioItems[audioItemId]) {
+            this.queriesByAudioItems[audioItemId] = [];
+          }
+
+          this.queriesByAudioItems[audioItemId].push({
+            id: queryId++,
+            text: text,
+            moras: moraList,
+          });
+        }
       };
       reader.readAsText(file);
     },
